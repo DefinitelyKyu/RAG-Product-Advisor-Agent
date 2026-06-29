@@ -4,11 +4,11 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage, SystemMessage
-from retrieval.hybrid_search import hybrid_search
-from retrieval.reranker import rerank
 from ingestion.pipeline import ingest
 import shutil
 import tempfile
+from agent.graph import agent
+
 
 load_dotenv()
 
@@ -41,37 +41,19 @@ def health():
 
 @app.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
-    # retrieve
-    candidates = hybrid_search(request.query, k=10)
-    if not candidates:
-        raise HTTPException(status_code=404, detail="No products found")
-
-    # rerank
-    top_docs = rerank(request.query, candidates, top_k=3)
-
-    # build context
-    context = "\n\n".join([doc.page_content for doc in top_docs])
-
-    # generate
-    messages = [
-        SystemMessage(content=SYSTEM_PROMPT),
-        HumanMessage(content=f"Context:\n{context}\n\nQuestion: {request.query}")
-    ]
-    response = llm.invoke(messages)
-
-    # build sources
-    sources = [
-        {
-            "product_id": doc.metadata.get("product_id"),
-            "name": doc.metadata.get("name"),
-            "price_thb": doc.metadata.get("price_thb"),
-            "category": doc.metadata.get("category"),
-        }
-        for doc in top_docs
-    ]
-
-    return ChatResponse(answer=response.content, sources=sources)
-
+    result = agent.invoke({
+        "query": request.query,
+        "rewritten_query": "",
+        "retrieved_docs": [],
+        "filtered_docs": [],
+        "comparison_table": "",
+        "answer": "",
+        "sources": []
+    })
+    return ChatResponse(
+        answer=result["answer"],
+        sources=result["sources"]
+    )
 
 @app.post("/ingest")
 def ingest_catalog(file: UploadFile = File(...)):
