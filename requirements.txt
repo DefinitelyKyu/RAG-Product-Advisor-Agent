@@ -1,0 +1,15 @@
+langchain
+langchain-community
+langchain-chroma
+langchain-huggingface
+langchain-google-genai
+langgraph
+chromadb
+sentence-transformers
+rank-bm25
+fastapi
+uvicorn
+streamlit
+pandas
+python-dotenv
+ragas
