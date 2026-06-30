@@ -17,7 +17,9 @@ The agent rewrites your query, retrieves relevant products via hybrid search, re
 
 ## Architecture
 
-```
+![Architecture](architecture.png)
+
+\```
 User Query
     ↓
 FastAPI Gateway
@@ -28,10 +30,11 @@ LangGraph Orchestrator (plan → act → reflect)
     ├── CrossEncoder Rerank — precision scoring
     ├── Budget Filter       — removes out-of-budget products
     ├── Spec Comparison     — side-by-side table for compare queries
-    └── LLM Generate        — Gemini 2.0 Flash with source citations
+    └── LLM Generate        — Gemini 2.5 Flash Lite with source citations
     ↓
 Streamlit Chat UI
-```
+\```
+จุดที่ 2 — Tech Stack t
 
 ---
 
