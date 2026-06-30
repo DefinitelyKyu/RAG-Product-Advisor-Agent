@@ -42,7 +42,7 @@ Streamlit Chat UI
 
 | Layer | Choice | Rationale |
 |---|---|---|
-| LLM | Gemini 2.0 Flash | Fast, cost-effective, multilingual |
+| LLM | Gemini 2.5 Flash lite | Fast, cost-effective, multilingual |
 | Embedding | `all-MiniLM-L6-v2` | Local, no API key needed |
 | Vector DB | ChromaDB | Local-first, zero infra overhead |
 | Agent | LangGraph | Multi-step orchestration with state |
